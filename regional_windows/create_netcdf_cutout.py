@@ -5,7 +5,7 @@ from pylab import *
 import cartopy.crs as ccrs
 
 src = nc.Dataset("data_for_cutout.nc")
-dst = nc.Dataset("testcdf.nc", "w")
+dst = nc.Dataset("cutout.nc", "w")
 
 # Eventuell nicht notwendig
 for name in src.ncattrs():
