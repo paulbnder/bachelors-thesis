@@ -24,8 +24,8 @@ from os import path
 config = Config('config.json')
 cgnet = CGNet(config)
 
-train_path = 'data'
-inference_path = 'data/inference'
+train_path = '../data'
+inference_path = '../data/inference'
 
 train = ClimateDatasetLabeled(
     path.join(train_path, 'train'), config)
