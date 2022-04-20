@@ -5,14 +5,14 @@ from pylab import *
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 
-src = nc.Dataset("data_for_cutout.nc")
-dst = nc.Dataset("cutout.nc", "w", format="NETCDF4")
+src = nc.Dataset("data-2013-09-16-01-1_1.nc")
+dst = nc.Dataset("cutout_data-2013-09-16-01-1_1.nc", "w", format="NETCDF4")
 
 # set window coordinates
-latmin = 400
-latmax = 580
-lonmin = 0
-lonmax = 600
+latmin = 580
+latmax = 768
+lonmin = 600
+lonmax = 1152
 
 
 # Dimensionen kopieren
@@ -50,12 +50,13 @@ for name, variable in src.variables.items():
 
 water_vapor = dst.variables['TMQ'][0, :, :]
 sea_level = dst.variables['PSL'][0, :, :]
+labels = dst.variables['LABELS'][:,:]
 
 np.savetxt('output.txt', dst.variables['TMQ']
            [0, latmin:latmax, lonmin:lonmax])
 lat = dst.variables['lat'][:]
 lon = dst.variables['lon'][:]
-lon = lon-180
+lon = lon
 print('lat: ', lat.size)
 print('lon: ', lon.size)
 ax = plt.subplot(2, 3,  1, projection=ccrs.PlateCarree())
@@ -71,6 +72,8 @@ plt.contourf(lon, lat, water_vapor, cmap=cm.Blues,
 
 plt.contour(lon, lat, sea_level, levels=15,
             transform=ccrs.PlateCarree(), colors='grey', linewidths=0.3)
+plt.contourf(lon, lat, labels, levels=[0, 0.9, 1.9, 3],
+                                transform=ccrs.PlateCarree(), colors=[(0, 0, 0, 0), (1, 0, 0, 0.3), (0, 1, 0, 0.3)])
 
 print('water_vapor.shape: ', water_vapor.shape)
 np.savetxt('water_vapor.txt', water_vapor)

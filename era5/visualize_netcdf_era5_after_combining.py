@@ -22,8 +22,8 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
 
 
 # NC Datei laden und die benötigten Variabeln extrahieren
-data = xr.open_dataset("data-2013-09-16-01-1_1.nc")
-predictions_netcdf = xr.open_dataset('class_masks_data-2013-09-16-01-1_1.nc')
+data = xr.open_dataset("2011_06_1-3-16_combined.nc")
+predictions_netcdf = xr.open_dataset('class_masks_2011_06_01_combined.nc')
 lat = data.lat[:]
 lon = data.lon[:]
 
@@ -35,8 +35,8 @@ print('water vapor: ', water_vapor)
 np.savetxt('water_vapor.txt', water_vapor)
 time = data.time
 sea_level = data.PSL[0, :, :]
-surface_wind_u = data.UBOT[0, :, :]
-surface_wind_v = data.VBOT[0, :, :]
+surface_wind_u = data.U850[0, :, :]
+surface_wind_v = data.V850[0, :, :]
 
 predictions = predictions_netcdf.__xarray_dataarray_variable__[0, :, :]
 print('predictions: ', predictions)
@@ -91,8 +91,6 @@ predictions_data = ax_preds.contourf(lon, lat, predictions, levels=[0, 0.9, 1.9,
                                      transform=ccrs.PlateCarree(), colors=[(0, 0, 0, 0), (1, 0, 0, 0.3), (0, 1, 0, 0.3)])
 label_data = ax_labels.contourf(lon, lat, labels, levels=[0, 0.9, 1.9, 3],
                                 transform=ccrs.PlateCarree(), colors=[(0, 0, 0, 0), (1, 0, 0, 0.3), (0, 1, 0, 0.3)])
-label_data_dark = ax_preds.contourf(lon, lat, labels, levels=[0, 0.9, 1.9, 3],
-                                transform=ccrs.PlateCarree(), colors=[(0, 0, 0, 0), (1, 0, 0, 0.6), (0.5, 0.5, 0, 0.6)])
 
 # Legende anzeigen
 plt.colorbar(water_vapor_data,
@@ -103,13 +101,13 @@ plt.colorbar(vapor_flux_data,
 #              shrink=0.5, ax=ax_blank, pad=0.1)
 
 # Einheiten zu Konturlinien für den Luftdruck anzeigen
-# ax_preds.clabel(
+# ax_labels.clabel(
 #     sea_level_pressure_data,
-#     colors=['black'],
+#     colors=['grey'],
 #     manual=False,
 #     inline=False,
-#     fmt='{:.0f}'.format,
-#     fontsize='smaller'
+#     fmt='{:.0f} hPa'.format,
+#     fontsize='xx-small'
 # )
 
 # Küstenlinien auf Karte anzeigen
@@ -124,7 +122,7 @@ for ax in axis:
 # Karte öffnen
 figure = plt.gcf()  # get current figure
 figure.set_size_inches(18, 9)
-plt.savefig('class_masks_data-2013-09-16-01-1_1',  dpi=1000, bbox_inches='tight')
+plt.savefig('2011_06_1-3-16_combined',  dpi=1000, bbox_inches='tight')
 mng.full_screen_toggle()
 
 print('vf shape: ', vapor_flux.shape)

@@ -25,13 +25,13 @@ from os import path
 config = Config('config.json')
 cgnet = CGNet(config)
 
-train_path = 'data'
-inference_path = 'data/inference'
+train_path = '../data'
+inference_path = '../data/inference'
 
 train = ClimateDatasetLabeled(
-    path.join(train_path, 'train_with_vapor_flux'), config)
+    path.join(train_path, 'train'), config)
 test = ClimateDatasetLabeled(
-    path.join(train_path, 'test_with_vapor_flux'), config)
+    path.join(train_path, 'test'), config)
 inference = ClimateDataset(inference_path, config)
 
 # cgnet.train(train)
@@ -64,12 +64,14 @@ for features, labels in epoch_loader:
         outputs = torch.softmax(cgnet.network(features), 1)
     predictions = torch.max(outputs, 1)[1]
     aggregate_cm += get_cm(predictions, labels, 3)
+    print("predictions: ", predictions)
+    print("labels: ", labels)
 
     iou_array = np.array([get_iou_perClass(get_cm(predictions, labels, 3))])
-    print('iou_array.mean(): ', iou_array.mean())
-    ious_per_image = np.append(ious_per_image, iou_array.mean())
+    print('iou_array: ', iou_array)
+    ious_per_image = np.append(ious_per_image, iou_array[0,1])
 print(ious_per_image)
-np.savetxt('ious_per_image.txt', ious_per_image)
+np.savetxt('ious_per_image_TC.txt', ious_per_image)
 print('i: ', i)
 # print('Evaluation stats:')
 # print(aggregate_cm)
